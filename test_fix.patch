@@ -1,0 +1,64 @@
+--- backend/leanstore/storage/buffer-manager/BufferManager.cpp
++++ backend/leanstore/storage/buffer-manager/BufferManager.cpp
+@@ -834,23 +834,38 @@
+       BufferFrame* final_bf = &bf;
+       if (load_into_cxl &&
+          DTRegistry::global_dt_registry.shouldDirectlyPromoteToDRAM(bf.page.dt_id, bf)) {
+-         // dram_free_list.tryPop() uses JMUW internally and can trigger a jumpmu if the
+-         // free list is empty.  At this point io_frame_lock (JMUW) is held,
+-         // so a jumpmu here would release it via RAII and leave io_frame.state == READING
+-         // with io_frame.bf == nullptr — other readers will spin-wait on io_frame.mutex
+-         // and then retry via jumpmu::jump().  This is safe: the CXL bf we already popped
+-         // is still in LOADED state and will be reclaimed below only if tryPop succeeds.
+-         BufferFrame& dram_bf = randomPartition().dram_free_list.tryPop();
+-         std::memcpy(&dram_bf.page, &bf.page, PAGE_SIZE);
+-         dram_bf.header.last_written_plsn = bf.header.last_written_plsn;
+-         dram_bf.header.state = BufferFrame::STATE::LOADED;
+-         dram_bf.header.pid = pid;
+-         if (FLAGS_crc_check) {
+-            dram_bf.header.crc = bf.header.crc;
++         BufferFrame* dram_bf_ptr = nullptr;
++         jumpmuTry()
++         {
++            dram_bf_ptr = &randomPartition().dram_free_list.tryPop();
++         }
++         jumpmuCatch()
++         {
++            // If tryPop fails, we must clean up the io_frame before jumping!
++            // We hold io_frame_lock (JMUW).
++            JMUW<std::unique_lock<std::mutex>> g_guard_cleanup(partition.ht_mutex);
++            if (io_frame.readers_counter.fetch_add(-1) == 1) {
++               partition.io_ht.remove(pid);
++            } else {
++               // Other threads are waiting. We can't just delete it.
++               // Actually, if we set state to TO_DELETE, they will clean it up.
++               io_frame.state = IOFrame::STATE::TO_DELETE;
++            }
++            g_guard_cleanup->unlock();
++            io_frame_lock->unlock();
++            
++            // Also we must reclaim the CXL bf we popped
++            reclaimCXLBufferFrame(bf);
++            jumpmu::jump();
++         }
++         std::memcpy(&dram_bf_ptr->page, &bf.page, PAGE_SIZE);
++         dram_bf_ptr->header.last_written_plsn = bf.header.last_written_plsn;
++         dram_bf_ptr->header.state = BufferFrame::STATE::LOADED;
++         dram_bf_ptr->header.pid = pid;
++         if (FLAGS_crc_check) {
++            dram_bf_ptr->header.crc = bf.header.crc;
+          }
+-         // Reclaim the CXL BufferFrame.
+-         // [Caution]: the following latch operations are not logically required here
+-         // (the CXL bf is invisible to other threads while io_frame.state == READING),
+-         // but are kept to satisfy bf.reset()'s internal assert checks.
+          bf.header.latch.mutex.lock();
+          bf.header.latch -> fetch_add(LATCH_EXCLUSIVE_BIT);
+          bf.reset();
+          bf.header.latch -> fetch_add(LATCH_EXCLUSIVE_BIT, std::memory_order_release);
+          bf.header.latch.mutex.unlock();
+          reclaimCXLBufferFrame(bf);
+ 
+-         final_bf = &dram_bf;
++         final_bf = dram_bf_ptr;
+       }
