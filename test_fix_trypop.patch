@@ -1,0 +1,93 @@
+--- backend/leanstore/storage/buffer-manager/BufferManager.cpp
++++ backend/leanstore/storage/buffer-manager/BufferManager.cpp
+@@ -849,36 +849,42 @@
+          // =====================================================================================
+          if (load_into_cxl &&
+             DTRegistry::global_dt_registry.shouldDirectlyPromoteToDRAM(bf.page.dt_id, bf)) {
+-            // dram_free_list.tryPop() uses JMUW internally and can trigger a jumpmu if the
+-            // free list is empty.  io_frame_lock (JMUW<unique_lock>) is still in scope here,
+-            // so a jumpmu will call its destructor → unlock io_frame.mutex automatically.
+-            // The io_frame.state remains READING with io_frame.bf == nullptr; waiting readers
+-            // will acquire io_frame.mutex, see READING, release it, and retry via jumpmu::jump().
+-            BufferFrame& dram_bf = randomPartition().dram_free_list.tryPop();
+-            std::memcpy(&dram_bf.page, &bf.page, PAGE_SIZE);
+-            dram_bf.header.last_written_plsn = bf.header.last_written_plsn;
+-            dram_bf.header.state = BufferFrame::STATE::LOADED;
+-            dram_bf.header.pid = pid;
+-            if (FLAGS_crc_check) {
+-               dram_bf.header.crc = bf.header.crc;
+-            }
+-            // Reclaim the CXL BufferFrame.
+-            //
+-            // bf is the CXL BufferFrame we loaded the page into.  While io_frame.state ==
+-            // READING, no other thread can reach bf via the io_ht (they block on
+-            // io_frame.mutex), so bf is exclusively ours — no latch is needed.
+-            //
+-            // We do NOT call bf.reset() here because reset() asserts
+-            // header.latch.assertExclusivelyLatched(), which would require acquiring
+-            // latch.mutex (a std::shared_mutex).  That acquisition can block if cxl_pp
+-            // holds a shared lock on the same latch while scanning CXL frames, creating
+-            // a deadlock: IO thread waits for latch.mutex while holding io_frame.mutex,
+-            // and waiting readers are blocked on io_frame.mutex.
+-            //
+-            // Instead, manually reset only the fields that reset() touches, without
+-            // touching the latch at all.  This is safe because bf is invisible to all
+-            // other threads at this point.
+-            bf.header.crc = 0;
+-            bf.header.last_writer_worker_id = std::numeric_limits<u8>::max();
+-            bf.header.last_written_plsn = 0;
+-            bf.header.state = BufferFrame::STATE::FREE;
+-            bf.header.is_being_written_back.store(false, std::memory_order_release);
+-            bf.header.pid = 9999;
+-            bf.header.next_free_bf = nullptr;
+-            bf.header.contention_tracker.reset();
+-            bf.header.keep_in_memory = false;
+-            reclaimCXLBufferFrame(bf);
+-
+-            final_bf = &dram_bf;
++            jumpmuTry() {
++               // dram_free_list.tryPop() uses JMUW internally and can trigger a jumpmu if the
++               // free list is empty. If we don't catch it, io_frame.state remains READING forever,
++               // causing an infinite retry loop for any thread trying to access this page.
++               BufferFrame& dram_bf = randomPartition().dram_free_list.tryPop();
++               std::memcpy(&dram_bf.page, &bf.page, PAGE_SIZE);
++               dram_bf.header.last_written_plsn = bf.header.last_written_plsn;
++               dram_bf.header.state = BufferFrame::STATE::LOADED;
++               dram_bf.header.pid = pid;
++               if (FLAGS_crc_check) {
++                  dram_bf.header.crc = bf.header.crc;
++               }
++               // Reclaim the CXL BufferFrame.
++               //
++               // bf is the CXL BufferFrame we loaded the page into.  While io_frame.state ==
++               // READING, no other thread can reach bf via the io_ht (they block on
++               // io_frame.mutex), so bf is exclusively ours — no latch is needed.
++               //
++               // We do NOT call bf.reset() here because reset() asserts
++               // header.latch.assertExclusivelyLatched(), which would require acquiring
++               // latch.mutex (a std::shared_mutex).  That acquisition can block if cxl_pp
++               // holds a shared lock on the same latch while scanning CXL frames, creating
++               // a deadlock: IO thread waits for latch.mutex while holding io_frame.mutex,
++               // and waiting readers are blocked on io_frame.mutex.
++               //
++               // Instead, manually reset only the fields that reset() touches, without
++               // touching the latch at all.  This is safe because bf is invisible to all
++               // other threads at this point.
++               bf.header.crc = 0;
++               bf.header.last_writer_worker_id = std::numeric_limits<u8>::max();
++               bf.header.last_written_plsn = 0;
++               bf.header.state = BufferFrame::STATE::FREE;
++               bf.header.is_being_written_back.store(false, std::memory_order_release);
++               bf.header.pid = 9999;
++               bf.header.next_free_bf = nullptr;
++               bf.header.contention_tracker.reset();
++               bf.header.keep_in_memory = false;
++               reclaimCXLBufferFrame(bf);
++
++               final_bf = &dram_bf;
++            } jumpmuCatch() {
++               // Failed to get a DRAM frame (DRAM is full). 
++               // Fallback to using the CXL frame instead of aborting the IO operation.
++               final_bf = &bf;
++            }
+          }

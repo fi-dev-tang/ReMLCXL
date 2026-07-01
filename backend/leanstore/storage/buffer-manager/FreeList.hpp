@@ -1,0 +1,27 @@
+#pragma once
+#include "BufferFrame.hpp"
+#include "Units.hpp"
+// -------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------
+#include <mutex>
+// -------------------------------------------------------------------------------------
+namespace leanstore
+{
+namespace storage
+{
+// -------------------------------------------------------------------------------------
+struct FreeList {
+   std::mutex mutex;
+   BufferFrame* head = nullptr;
+   std::atomic<u64> counter = 0;
+   // -------------------------------------------------------------------------------------
+   BufferFrame& tryPop();
+   BufferFrame* tryPopNoJump();  // Returns nullptr if empty, no jumpmu::jump()
+   void batchPush(BufferFrame* head, BufferFrame* tail, u64 counter);
+   void push(BufferFrame& bf);
+};
+// -------------------------------------------------------------------------------------
+}  // namespace storage
+}  // namespace leanstore
+
+// -------------------------------------------------------------------------------------

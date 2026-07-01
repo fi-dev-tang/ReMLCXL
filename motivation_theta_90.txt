@@ -1,0 +1,426 @@
+================================================================
+ Motivation Simulation Report
+ Generated: Zipf theta=0.9, requests=30000000
+================================================================
+
+================================================================
+ MOTIVATION EVIDENCE: Hot Pages Driven by Few Hot Records
+================================================================
+ Total Requests      : 30000000
+ Total Records       : 45875200
+ Zipfian Theta       : 0.9
+ Slots per Page      : 175
+ Pages Ever Accessed : 262144
+ Avg Accesses/Page   : 114.44
+================================================================
+
+[Section 1: Top-30 Hottest Pages — Slot-Level Skew]
+------------------------------------------------------------------------------------------------------------------------
+Rank  PageID      TotalAcc    ActiveSlots       HotSlot     HotCnt    Top1%    Top3%    Top5%    Verdict
+------------------------------------------------------------------------------------------------------------------------
+1     145861      613705      34/175            123         613648    100.0    100.0    100.0    ***  1 record dominates
+2     192420      328091      37/175            114         328029    100.0    100.0    100.0    ***  1 record dominates
+3     52743       270749      35/175            116         270676    100.0    100.0    100.0    ***  1 record dominates
+4     99302       198809      27/175            145         198772    100.0    100.0    100.0    ***  1 record dominates
+5     69953       158386      31/175            83          158313    100.0    100.0    100.0    ***  1 record dominates
+6     116512      131587      31/175            172         131531    100.0    100.0    100.0    ***  1 record dominates
+7     238979      113464      38/175            124         113391    99.9     100.0    100.0    ***  1 record dominates
+8     23394       100574      35/175            110         100515    99.9     100.0    100.0    ***  1 record dominates
+9     35533       88887       37/175            164         88823     99.9     99.9     100.0    ***  1 record dominates
+10    82092       80685       35/175            6           80615     99.9     99.9     99.9     ***  1 record dominates
+11    204559      73243       33/175            150         73192     99.9     99.9     100.0    ***  1 record dominates
+12    251118      67928       53/175            74          67836     99.9     99.9     99.9     ***  1 record dominates
+13    221769      63012       37/175            146         62936     99.9     99.9     99.9     ***  1 record dominates
+14    6184        58656       33/175            33          58612     99.9     99.9     99.9     ***  1 record dominates
+15    128651      54968       33/175            132         54910     99.9     99.9     99.9     ***  1 record dominates
+16    175210      51687       33/175            6           51627     99.9     99.9     99.9     ***  1 record dominates
+17    187349      48625       31/175            95          48551     99.8     99.9     99.9     ***  1 record dominates
+18    233908      46403       28/175            122         46349     99.9     99.9     99.9     ***  1 record dominates
+19    94231       44447       26/175            66          44403     99.9     99.9     99.9     ***  1 record dominates
+20    140790      42356       34/175            20          42304     99.9     99.9     99.9     ***  1 record dominates
+21    111441      40103       35/175            91          40046     99.9     99.9     99.9     ***  1 record dominates
+22    158000      38683       35/175            109         38609     99.8     99.9     99.9     ***  1 record dominates
+23    18323       37180       34/175            162         37123     99.8     99.9     99.9     ***  1 record dominates
+24    64882       35732       37/175            118         35677     99.8     99.9     99.9     ***  1 record dominates
+25    77021       34358       25/175            93          34304     99.8     99.9     99.9     ***  1 record dominates
+26    123580      33050       28/175            76          33008     99.9     99.9     99.9     ***  1 record dominates
+27    246047      31815       40/175            4           31747     99.8     99.8     99.8     ***  1 record dominates
+28    30462       31014       34/175            50          30967     99.8     99.9     99.9     ***  1 record dominates
+29    1113        29851       33/175            145         29781     99.8     99.8     99.9     ***  1 record dominates
+30    47672       29279       27/175            85          29225     99.8     99.9     99.9     ***  1 record dominates
+
+[Section 2: Detailed Slot Distribution of Hottest Page (PageID=145861)]
+  Total Accesses : 613705
+  Active Slots   : 34 / 175  (19.4% of slots ever touched)
+
+  KEY INSIGHT: Page has 613705 accesses total. How concentrated are they?
+------------------------------------------------------------------------
+SlotRank  SlotID    Accesses    ThisSlot%   Cumulative%
+------------------------------------------------------------------------
+1         123       613648      100.0       100.0%
+2         92        10          0.0         100.0%
+3         6         4           0.0         100.0%
+4         103       4           0.0         100.0%
+5         7         3           0.0         100.0%
+6         90        3           0.0         100.0%
+7         39        2           0.0         100.0%
+8         77        2           0.0         100.0%
+9         94        2           0.0         100.0%
+10        44        2           0.0         100.0%
+11        69        2           0.0         100.0%
+12        163       1           0.0         100.0%
+13        34        1           0.0         100.0%
+14        45        1           0.0         100.0%
+15        104       1           0.0         100.0%
+  ... other 19 accessed slots: 19 accesses (0.0%)
+  (+ 141 slots with 0 accesses)
+
+  ASCII Bar Chart (Top-10 Slots):
+  Slot 123  |########################################| 613648
+  Slot 92   |                                        | 10
+  Slot 6    |                                        | 4
+  Slot 103  |                                        | 4
+  Slot 7    |                                        | 3
+  Slot 90   |                                        | 3
+  Slot 39   |                                        | 2
+  Slot 77   |                                        | 2
+  Slot 94   |                                        | 2
+  Slot 44   |                                        | 2
+
+  ==> Top-5 slots account for 100.0% of this page's accesses.
+  ==> Promoting the entire page wastes 0.0% of DRAM/CXL bandwidth on cold records.
+
+[Section 3: Domination Statistics Over Top-100 Hottest Pages]
+  Question: Among hot pages, how many are dominated by <=K records?
+
+  Among top-100 hottest pages:
+------------------------------------------------------------
+  Pages where Top-1 slot  >= 50% of accesses: 100 / 100  (100.0%)
+  Pages where Top-3 slots >= 70% of accesses: 100 / 100  (100.0%)
+  Pages where Top-5 slots >= 80% of accesses: 100 / 100  (100.0%)
+  Pages where Top-10 slots>= 90% of accesses: 100 / 100  (100.0%)
+------------------------------------------------------------
+  Avg Top-1  slot contribution : 99.7%
+  Avg Top-3  slot contribution : 99.8%
+  Avg Top-5  slot contribution : 99.8%
+
+[Section 4: Record-Level vs Page-Level Access Distribution]
+  This section shows the access rank of hot records
+  that are assigned to the top-5 hottest pages.
+
+  (See Section 5 below for per-record access rank details.)
+
+[Section 5: Page Access CDF — How Skewed is Page-Level Access?]
+  (What % of total accesses are covered by top-K% of pages?)
+
+-------------------------------------------------------
+  Top-X% of Pages   Page Count        % of Total Accesses
+-------------------------------------------------------
+  Top-0.100000%     263               16.90%
+  Top-0.500000%     1311              23.29%
+  Top-1.000000%     2622              26.54%
+  Top-5.000000%     13108             36.48%
+  Top-10.000000%    26215             42.98%
+  Top-20.000000%    52429             52.73%
+  Top-50.000000%    131072            74.51%
+-------------------------------------------------------
+
+[Section 6: Bandwidth Waste Estimation (Page vs Record Promotion)]
+  Assumption: promoting a page costs 16 KB regardless of
+  how many records are actually hot inside it.
+
+  Among top-100 hottest pages:
+  - Avg % of page accesses that are 'cold' records : 0.2%
+  - If we promote top-100 pages entirely            : 100 * 16KB = 1600 KB promoted
+  - Effectively wasted bandwidth                    : ~3.2 KB (0.2% of 1600 KB)
+  - Record-level promotion would save               : ~3.2 KB of DRAM/CXL capacity
+
+================================================================
+ CONCLUSION
+================================================================
+  Under Zipfian(theta=0.9) workload with hash-scattered
+  record placement:
+
+  1. Page accesses are highly skewed (few pages are hot).
+  2. Within each hot page, accesses concentrate on very few
+     slots (records), while most slots remain cold.
+  3. Promoting entire pages wastes ~0.2% of
+     DRAM/CXL bandwidth on cold records.
+  4. Record-granularity promotion is needed to efficiently
+     utilize limited DRAM/CXL capacity.
+================================================================
+
+[Section 4 Detail: Top-20 Hottest Records]
+-----------------------------------------------------------------
+RecRank   RecordID        PageID      SlotID    Accesses    % of Total
+-----------------------------------------------------------------
+1         0               145861      123       613647      2.0455%
+2         1               192420      114       328029      1.0934%
+3         2               52743       116       270675      0.9022%
+4         3               99302       145       198771      0.6626%
+5         4               69953       83        158313      0.5277%
+6         5               116512      172       131531      0.4384%
+7         6               238979      124       113390      0.3780%
+8         7               23394       110       100515      0.3351%
+9         8               35533       164       88823       0.2961%
+10        9               82092       6         80615       0.2687%
+11        10              204559      150       73192       0.2440%
+12        11              251118      74        67836       0.2261%
+13        12              221769      146       62936       0.2098%
+14        13              6184        33        58612       0.1954%
+15        14              128651      132       54908       0.1830%
+16        15              175210      6         51627       0.1721%
+17        16              187349      95        48551       0.1618%
+18        17              233908      122       46349       0.1545%
+19        18              94231       66        44403       0.1480%
+20        19              140790      20        42299       0.1410%
+-----------------------------------------------------------------
+
+[Section 4 Detail: For Each Top-5 Hot Page, Show Its Records' Global Rank]
+  This directly proves: hot pages contain globally hot records.
+
+  Hot Page Rank #1  (PageID=145861, TotalAccesses=613705)
+------------------------------------------------------------------------
+SlotID    RecordID        SlotAccesses  Slot%         GlobalRecRank Category
+------------------------------------------------------------------------
+123       0               613647        100.0         1             *** GLOBALLY TOP-10
+92        146160          10            0.0           230637            cold
+6         631728          4             0.0           609822            cold
+7         1479706         3             0.0           1073001           cold
+90        4411129         2             0.0           2583695           cold
+77        2109134         2             0.0           2320159           cold
+103       13980785        2             0.0           1989348           cold
+103       6094482         2             0.0           2170748           cold
+69        1254463         2             0.0           1577776           cold
+94        842398          2             0.0           1589518           cold
+44        34982794        2             0.0           1351142           cold
+145       34293777        1             0.0           4643866           cold
+40        13370767        1             0.0           5783174           cold
+166       12696271        1             0.0           5398724           cold
+34        38082446        1             0.0           5550823           cold
+161       15018101        1             0.0           4325682           cold
+43        34170561        1             0.0           4103424           cold
+39        7893415         1             0.0           8661407           cold
+30        12753377        1             0.0           5421573           cold
+45        41268098        1             0.0           5656101           cold
+63        1624495         1             0.0           5339487           cold
+164       21719670        1             0.0           5314230           cold
+163       14927136        1             0.0           3223091           cold
+47        7002178         1             0.0           3858135           cold
+172       30008928        1             0.0           3196576           cold
+104       43951208        1             0.0           3110643           cold
+55        5330643         1             0.0           3397638           cold
+155       10357181        1             0.0           7200015           cold
+33        26862188        1             0.0           9393860           cold
+18        36070815        1             0.0           9575444           cold
+162       23486890        1             0.0           8892059           cold
+109       1423168         1             0.0           9279524           cold
+86        30157317        1             0.0           6340209           cold
+90        27247836        1             0.0           6796832           cold
+123       14625722        1             0.0           6614810           cold
+28        22639132        1             0.0           5842459           cold
+39        6945704         1             0.0           6266270           cold
+36        29219376        1             0.0           7370144           cold
+
+  Hot Page Rank #2  (PageID=192420, TotalAccesses=328091)
+------------------------------------------------------------------------
+SlotID    RecordID        SlotAccesses  Slot%         GlobalRecRank Category
+------------------------------------------------------------------------
+114       1               328029        100.0         2             *** GLOBALLY TOP-10
+10        138993          10            0.0           227149            cold
+118       372844          7             0.0           333639            cold
+98        760129          3             0.0           826181            cold
+121       1095371         3             0.0           1229271           cold
+103       502492          2             0.0           2564175           cold
+135       24094066        2             0.0           2582253           cold
+137       1489947         2             0.0           2063410           cold
+59        2246699         2             0.0           1413415           cold
+9         15089373        1             0.0           4984850           cold
+173       5208501         1             0.0           5300204           cold
+94        5762768         1             0.0           7954635           cold
+126       23758020        1             0.0           5663353           cold
+72        16590215        1             0.0           8408573           cold
+102       8050506         1             0.0           8310010           cold
+108       15788338        1             0.0           5545787           cold
+109       5608544         1             0.0           2754455           cold
+168       10872932        1             0.0           4930688           cold
+32        36681470        1             0.0           8064873           cold
+98        31790219        1             0.0           5521385           cold
+15        14596022        1             0.0           3926383           cold
+79        17019298        1             0.0           4115957           cold
+58        7412474         1             0.0           4533630           cold
+60        25988895        1             0.0           4295478           cold
+14        28922421        1             0.0           8297191           cold
+82        34944325        1             0.0           8111166           cold
+14        26213754        1             0.0           7153522           cold
+30        6416432         1             0.0           9436802           cold
+167       3882317         1             0.0           9475681           cold
+67        1652059         1             0.0           9570843           cold
+140       3291901         1             0.0           9020673           cold
+127       18321565        1             0.0           6441315           cold
+39        41561968        1             0.0           5904887           cold
+74        5770144         1             0.0           6321170           cold
+23        40621423        1             0.0           6327047           cold
+156       33603205        1             0.0           6169433           cold
+128       1296108         1             0.0           7503259           cold
+41        27849248        1             0.0           7712633           cold
+21        1125436         1             0.0           7615952           cold
+103       15914978        1             0.0           7291429           cold
+
+  Hot Page Rank #3  (PageID=52743, TotalAccesses=270749)
+------------------------------------------------------------------------
+SlotID    RecordID        SlotAccesses  Slot%         GlobalRecRank Category
+------------------------------------------------------------------------
+116       2               270675        100.0         3             *** GLOBALLY TOP-10
+106       130777          17            0.0           120248            cold
+35        258153          9             0.0           244133            cold
+115       988871          4             0.0           585097            cold
+127       447831          4             0.0           618151            cold
+9         2246680         2             0.0           1689703           cold
+141       3382381         2             0.0           2032492           cold
+158       3586379         2             0.0           1909498           cold
+153       2074685         2             0.0           2538514           cold
+64        7332921         2             0.0           2476980           cold
+4         9288433         2             0.0           1468085           cold
+33        28323214        1             0.0           2786455           cold
+29        19159611        1             0.0           8536658           cold
+116       4143867         1             0.0           8429220           cold
+39        15941500        1             0.0           3778500           cold
+83        18206972        1             0.0           3700457           cold
+5         9493471         1             0.0           9493285           cold
+169       20211917        1             0.0           5634941           cold
+63        616370          1             0.0           5782696           cold
+54        15543339        1             0.0           5358623           cold
+98        1937133         1             0.0           4196138           cold
+96        3746742         1             0.0           5746897           cold
+43        2626989         1             0.0           5259101           cold
+84        35592006        1             0.0           8402590           cold
+152       27419060        1             0.0           7156534           cold
+165       29555373        1             0.0           9299088           cold
+21        25192834        1             0.0           9690755           cold
+27        3165190         1             0.0           9594588           cold
+82        1531736         1             0.0           9615157           cold
+110       16695356        1             0.0           8903602           cold
+14        43197061        1             0.0           8875903           cold
+149       27204212        1             0.0           9259615           cold
+63        38814338        1             0.0           6346995           cold
+96        3265245         1             0.0           6447448           cold
+153       2118344         1             0.0           6820079           cold
+111       12574725        1             0.0           6614154           cold
+3         12388085        1             0.0           6230280           cold
+58        14420006        1             0.0           6188852           cold
+42        23282607        1             0.0           7565767           cold
+
+  Hot Page Rank #4  (PageID=99302, TotalAccesses=198809)
+------------------------------------------------------------------------
+SlotID    RecordID        SlotAccesses  Slot%         GlobalRecRank Category
+------------------------------------------------------------------------
+145       3               198771        100.0         4             *** GLOBALLY TOP-10
+119       547758          5             0.0           458363            cold
+56        911765          3             0.0           1003943           cold
+39        1028132         3             0.0           883170            cold
+169       2192064         2             0.0           2437733           cold
+117       2324496         2             0.0           2446922           cold
+167       32069167        2             0.0           1702895           cold
+106       5307407         1             0.0           3860421           cold
+112       8258609         1             0.0           8716619           cold
+158       12500679        1             0.0           5067261           cold
+10        2402174         1             0.0           5566329           cold
+76        30684686        1             0.0           4019616           cold
+99        7633786         1             0.0           3953684           cold
+57        19003734        1             0.0           4105793           cold
+50        11515634        1             0.0           4813992           cold
+125       12526632        1             0.0           4472422           cold
+21        4145902         1             0.0           3651875           cold
+172       22531030        1             0.0           3710333           cold
+137       28161470        1             0.0           3776188           cold
+81        25395817        1             0.0           8466439           cold
+155       928499          1             0.0           7023192           cold
+145       7160476         1             0.0           8269123           cold
+29        24779922        1             0.0           9079483           cold
+170       10153611        1             0.0           6643008           cold
+140       9185005         1             0.0           7511206           cold
+2         13906754        1             0.0           7616177           cold
+71        1117892         1             0.0           7663996           cold
+96        23510532        1             0.0           6956488           cold
+
+  Hot Page Rank #5  (PageID=69953, TotalAccesses=158386)
+------------------------------------------------------------------------
+SlotID    RecordID        SlotAccesses  Slot%         GlobalRecRank Category
+------------------------------------------------------------------------
+83        4               158313        100.0         5             *** GLOBALLY TOP-10
+149       142068          14            0.0           145226            cold
+141       105171          11            0.0           203479            cold
+150       701769          7             0.0           333719            cold
+115       631732          5             0.0           495407            cold
+113       2001950         3             0.0           888969            cold
+24        33280610        2             0.0           2350296           cold
+28        5357271         2             0.0           1959472           cold
+18        1937220         2             0.0           2546272           cold
+166       1595811         2             0.0           1642972           cold
+19        4268045         2             0.0           2347691           cold
+45        2283566         2             0.0           2090428           cold
+81        1268787         2             0.0           2342593           cold
+4         2189333         1             0.0           4386475           cold
+98        28046958        1             0.0           2781557           cold
+140       35275470        1             0.0           5145302           cold
+151       32705417        1             0.0           5257635           cold
+50        1394403         1             0.0           4919104           cold
+169       27479957        1             0.0           5696886           cold
+0         8660710         1             0.0           5545928           cold
+120       23434474        1             0.0           4456792           cold
+5         22435343        1             0.0           3926727           cold
+155       8074066         1             0.0           6907245           cold
+70        11385672        1             0.0           3861531           cold
+103       12635850        1             0.0           8451930           cold
+2         1086158         1             0.0           8490406           cold
+97        2399902         1             0.0           8555167           cold
+150       20717912        1             0.0           7929594           cold
+73        45051945        1             0.0           7809900           cold
+7         18758070        1             0.0           9429240           cold
+157       7416841         1             0.0           6275668           cold
+11        7260178         1             0.0           7766648           cold
+
+
+[Section 7: Record Access CDF — How Skewed is Record-Level Access?]
+  (What % of total accesses are covered by top-K records?)
+
+-------------------------------------------------------
+  Top-K Records     Record Count      % of Total Accesses
+-------------------------------------------------------
+  Top-1             1                 2.0455%
+  Top-5             5                 5.2314%
+  Top-10            10                6.9477%
+  Top-50            50                11.4105%
+  Top-100           100               13.5670%
+  Top-500           500               19.1966%
+  Top-1000          1000              21.9138%
+  Top-5000          5000              29.0027%
+  Top-10000         10000             32.4343%
+-------------------------------------------------------
+
+[Section 8: Final Motivation Summary]
+-----------------------------------------------------------------
+  Dataset Size     : 4 GB (262144 pages x 175 slots)
+  Total Records    : 45875200
+  Total Requests   : 30000000
+  Zipfian Theta    : 0.90
+
+  [Record-Level Skew]
+  - Top-1  record  covers : 2.05% of all accesses
+  - Top-5  records cover  : 5.23% of all accesses
+  - Top-10 records cover  : 6.95% of all accesses
+
+  [Page-Internal Skew — Avg over Top-20 Hot Pages]
+  - Avg Top-1 slot  contributes : 95.16% of page accesses
+  - Avg Top-3 slots contribute  : 95.18% of page accesses
+  - Avg Top-5 slots contribute  : 95.19% of page accesses
+
+  [Key Takeaway]
+  Under Zipfian(theta=0.90) with hash-scattered placement,
+  hot pages are driven by a tiny fraction of their records.
+  On average, only top-5 slots account for 95.19% of a hot page's accesses,
+  yet page-granularity promotion would bring ALL 175 records into DRAM/CXL.
+  => Record-granularity admission control can save ~4.8% of capacity
+     that would otherwise be wasted on cold records.
+-----------------------------------------------------------------
