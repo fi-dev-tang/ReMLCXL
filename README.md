@@ -1,10 +1,10 @@
-# ReMLCXL
+# CellarCXL
 
 Record-level Memory-tiering over CXL for OLTP Databases.
 
-ReMLCXL extends the buffer pool of a main-memory storage engine into a **three-tier hierarchy** (DRAM → CXL → SSD) using *record-granularity* caching rather than page-granularity tiering. The key insight is that the top 1–2% hottest record slots within a page account for ~69% of intra-page accesses under skewed workloads; page-level promotion therefore wastes most of the precious DRAM tier on cold records.
+CellarCXL extends the buffer pool of a main-memory storage engine into a **three-tier hierarchy** (DRAM → CXL → SSD) using *record-granularity* caching rather than page-granularity tiering. The key insight is that the top 1–2% hottest record slots within a page account for ~69% of intra-page accesses under skewed workloads; page-level promotion therefore wastes most of the precious DRAM tier on cold records.
 
-ReMLCXL resolves this with three cooperating mechanisms:
+CellarCXL resolves this with three cooperating mechanisms:
 
 1. **Two-Level Admission Control** — a page-level Count-Min Sketch filters the full access stream, then a record-level sketch activates only on hot-page candidates to classify intra-page skew.
 2. **Lock-Free Record Cache** — hot records are promoted into a DRAM-resident Record Cache with epoch-based concurrency control and Write-Through support for update workloads.
@@ -15,7 +15,7 @@ Built on top of [LeanStore](https://github.com/leanstore/leanstore).
 ## Architecture
 
 <p align="center">
-  <img src="readme_figures/architecture.png" alt="ReMLCXL Architecture" width="600"/>
+  <img src="readme_figures/architecture.png" alt="CellarCXL Architecture" width="600"/>
 </p>
 
 The system organizes data across three tiers:
@@ -34,6 +34,10 @@ Background threads handle admission, promotion, and eviction; foreground transac
   <img src="readme_figures/two_level_admission.png" alt="Two-Level Admission Control" width="600"/>
 </p>
 
+<p align="center">
+  <img src="readme_figures/admission_trace.png" alt="Admission Trace Example" width="600"/>
+</p>
+
 Admission is cascaded in two levels:
 - **Level 1 (Page Hotness Filter):** A page-level Count-Min Sketch (`PageCMS`) streams all accesses and identifies hot-page candidates that exceed a dynamic threshold.
 - **Level 2 (Record Skew Detector):** A record-level Count-Min Sketch (`RecordCMS`) activates only on promoted hot pages, classifying intra-page skew. Records exceeding the skew threshold are promoted individually into the DRAM Record Cache; otherwise the full page is promoted into the Buffer Pool.
@@ -50,8 +54,8 @@ Each cached record consists of four sections: **Meta Data** (type, key length, v
 
 | Branch | Description |
 |--------|-------------|
-| `ReadOnly` | ReMLCXL with read-only (no write-back) Record Cache for YCSB and TPC-C |
-| `WriteThrough` | ReMLCXL with write-through Record Cache for update-heavy workloads |
+| `ReadOnly` | CellarCXL with read-only (no write-back) Record Cache for YCSB and TPC-C |
+| `WriteThrough` | CellarCXL with write-through Record Cache for update-heavy workloads |
 | `experiments` | Experiment scripts (Exp1–Exp7) for paper reproduction |
 
 ## Quick Start
@@ -69,7 +73,7 @@ A C++20-capable compiler (GCC ≥ 13) is required.
 ### Build
 
 ```bash
-git clone <repo-url> && cd ReMLCXL
+git clone <repo-url> && cd CellarCXL
 git checkout ReadOnly   # or WriteThrough
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
@@ -132,50 +136,54 @@ The `experiments` branch contains all scripts for reproducing the paper's evalua
 ### End-to-End Throughput (WS = 4 GiB, θ = 0.90)
 
 <p align="center">
-  <img src="readme_figures/e2e_throughput.png" alt="End-to-End Throughput" width="600"/>
+  <img src="readme_figures/0723_e2e_throughput_combined.png" alt="End-to-End Throughput" width="600"/>
 </p>
 
-ReMLCXL achieves up to **954 kOPS** (ReadOnly, YCSB-C) and **871 kOPS** (WriteThrough, YCSB-C), outperforming the constrained DRAM+SSD baseline by orders of magnitude on skewed workloads.
+CellarCXL achieves up to **954 kOPS** (ReadOnly, YCSB-C) and **871 kOPS** (WriteThrough, YCSB-C), outperforming the constrained DRAM+SSD baseline by orders of magnitude on skewed workloads.
 
 ### Latency Breakdown — ReadOnly (WS = 4 GiB, θ = 0.90)
 
 <p align="center">
-  <img src="readme_figures/e2e_ro_latency.png" alt="ReadOnly Latency" width="600"/>
+  <img src="readme_figures/0723_e2e_ro_latency.png" alt="ReadOnly Latency" width="600"/>
 </p>
 
-ReMLCXL reduces average latency to single-digit to low-double-digit microseconds on read-intensive workloads (C: 7.6 µs, B: 23 µs), matching unconstrained DRAM performance. P99 latency remains comparable to unconstrained, while the constrained baseline suffers significantly higher latency due to SSD fallback.
+CellarCXL reduces average latency to single-digit to low-double-digit microseconds on read-intensive workloads (C: 7.6 µs, B: 23 µs), matching unconstrained DRAM performance. P99 latency remains comparable to unconstrained, while the constrained baseline suffers significantly higher latency due to SSD fallback.
 
 ### Latency Breakdown — WriteThrough (WS = 4 GiB, θ = 0.90)
 
 <p align="center">
-  <img src="readme_figures/e2e_wt_latency.png" alt="WriteThrough Latency" width="600"/>
+  <img src="readme_figures/0723_e2e_wt_latency.png" alt="WriteThrough Latency" width="600"/>
 </p>
 
-Under WriteThrough, ReMLCXL achieves sub-50 µs average latency on YCSB-C (8.5 µs) and YCSB-B (16 µs), with P95 latency down to 31 µs on read-only workloads. The write-through path adds minimal overhead while maintaining near-unconstrained tail latency behavior.
+Under WriteThrough, CellarCXL achieves sub-50 µs average latency on YCSB-C (8.5 µs) and YCSB-B (16 µs), with P95 latency down to 31 µs on read-only workloads. The write-through path adds minimal overhead while maintaining near-unconstrained tail latency behavior.
 
 ### Hit Rate Breakdown (WS = 4 GiB, θ = 0.90)
 
 <p align="center">
-  <img src="readme_figures/e2e_hitrate.png" alt="Hit Rate Breakdown" width="600"/>
+  <img src="readme_figures/0723_e2e_hitrate_combined.png" alt="Hit Rate Breakdown" width="600"/>
 </p>
 
-The stacked hit-rate breakdown shows that ReMLCXL's Record Cache absorbs the majority of hot-record accesses (orange segments), while the CXL tier (dark blue) serves as a secondary buffer for page-level misses. Under ReadOnly, workloads A–D achieve Record Cache hit rates of 10–30%, with the remaining accesses served by the CXL and DRAM Buffer Pool tiers.
+The stacked hit-rate breakdown shows that CellarCXL's Record Cache absorbs the majority of hot-record accesses (orange segments), while the CXL tier (dark blue) serves as a secondary buffer for page-level misses. Under ReadOnly, workloads A–D achieve Record Cache hit rates of 10–30%, with the remaining accesses served by the CXL and DRAM Buffer Pool tiers.
 
-### Cross-System Comparison (Exp7, WS = 4 GiB)
+### Cross-System Comparison (Exp7)
 
 <p align="center">
-  <img src="readme_figures/exp7_comparison.png" alt="Cross-System Comparison" width="600"/>
+  <img src="readme_figures/0723_speedup_conv_combined.png" alt="Cross-System Comparison" width="600"/>
 </p>
 
-ReMLCXL wins 5 of 7 workloads against baselines (bf-Tree, HybridTier, Tiered Indexing, Three-Tier), with up to **+44.6%** on TPC-C.
+CellarCXL wins 5 of 7 workloads against baselines (bf-Tree, HybridTier, Tiered Indexing, Three-Tier), with up to **+44.6%** on TPC-C.
 
 ### Ablation Study (WS = 4 GiB, θ = 0.90, ReadOnly)
 
 <p align="center">
-  <img src="readme_figures/ablation_scheme_b.png" alt="Ablation Study" width="600"/>
+  <img src="readme_figures/0723_ablation_higher.png" alt="Ablation Study (Higher is Better)" width="600"/>
 </p>
 
-The ablation compares ReMLCXL (`two_level`) against `page_only` and pure `lru` baselines across five metrics (DRAM hit rate, throughput, average latency, P95/P99 latency), all normalized to LRU. ReMLCXL achieves up to **6.73×** DRAM hit rate and **3.16×** throughput over LRU on YCSB-C, while reducing P99 latency to **0.27×** on YCSB-A — confirming that record-level admission is the dominant contributor to performance gains.
+<p align="center">
+  <img src="readme_figures/0723_ablation_lower.png" alt="Ablation Study (Lower is Better)" width="600"/>
+</p>
+
+The ablation compares CellarCXL (`two_level`) against `page_only` and pure `lru` baselines across five metrics (DRAM hit rate, throughput, average latency, P95/P99 latency), all normalized to LRU. CellarCXL achieves up to **6.73×** DRAM hit rate and **3.16×** throughput over LRU on YCSB-C, while reducing P99 latency to **0.27×** on YCSB-A — confirming that record-level admission is the dominant contributor to performance gains.
 
 ## CXL Hardware Topology
 
