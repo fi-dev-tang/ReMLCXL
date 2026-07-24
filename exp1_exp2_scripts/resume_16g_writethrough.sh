@@ -4,20 +4,20 @@ set -euo pipefail
 trap '' HUP
 
 # =============================================================================
-# Resume 16G experiments — WriteThrough (ReMLCXL-WriteThrough)
+# Resume 16G experiments — WriteThrough (CellarCXL-WriteThrough)
 #
 # Runs the 18 missing 16G experiments that didn't complete in the original run.
 # Results saved to a new timestamped directory (does not touch old results).
 #
 # Usage:
-#   cd /path/to/project/ReMLCXL_experiments
+#   cd /path/to/project/CellarCXL_experiments
 #   nohup bash exp1_exp2_scripts/resume_16g_writethrough.sh &
 # =============================================================================
 
 # --- Repo / device config (same as original WT script) ---
 SSD_PATH="/path/to/data/cxl_test_tmp/exp1_exp2_writeThrough"
 CXL_DAX_DEVICE="/dev/dax0.2"
-REPO_ROOT="/path/to/project/ReMLCXL-WriteThrough"
+REPO_ROOT="/path/to/project/CellarCXL-WriteThrough"
 BUILD_DIR="$REPO_ROOT/build/frontend"
 
 # --- Output ---

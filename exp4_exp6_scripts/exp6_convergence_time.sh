@@ -20,7 +20,7 @@ trap '' HUP
 # -----------------------------------------------------------------------------
 # Repo paths
 # -----------------------------------------------------------------------------
-REPO_ROOT="/path/to/project/ReMLCXL-ReadOnly"
+REPO_ROOT="/path/to/project/CellarCXL-ReadOnly"
 BUILD_DIR="$REPO_ROOT/build/frontend"
 BINARY="$BUILD_DIR/exp6_convergence_test"
 

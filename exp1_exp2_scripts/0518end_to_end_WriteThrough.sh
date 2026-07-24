@@ -8,7 +8,7 @@ trap '' HUP
 
 # =============================================================================
 # End-to-End Experiment 1 + Experiment 2 (single-theta, multi-WS sweep)
-#   Repo: ReMLCXL-WriteThrough
+#   Repo: CellarCXL-WriteThrough
 #
 # Purpose
 #   Re-run end-to-end and ablation comparison under the new memory configuration
@@ -49,7 +49,7 @@ trap '' HUP
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# Repo-specific: SSD and DAX device for ReMLCXL-WriteThrough
+# Repo-specific: SSD and DAX device for CellarCXL-WriteThrough
 # -----------------------------------------------------------------------------
 SSD_PATH="/path/to/data/cxl_test_tmp/exp1_exp2_writeThrough"
 CXL_DAX_DEVICE="/dev/dax0.2"
@@ -58,7 +58,7 @@ CXL_DAX_DEVICE="/dev/dax0.2"
 # Paths
 # -----------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="/path/to/project/ReMLCXL-WriteThrough"
+REPO_ROOT="/path/to/project/CellarCXL-WriteThrough"
 BUILD_DIR="$REPO_ROOT/build/frontend"
 
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -410,7 +410,7 @@ main() {
    log_phase "End-to-End run start (theta=$THETA, WS=${WORKING_SETS[*]} GiB)"
    echo "[INFO] timestamp                = ${TIMESTAMP}"
    echo "[INFO] result_dir               = ${RESULT_DIR}"
-   echo "[INFO] repo                     = ReMLCXL-WriteThrough"
+   echo "[INFO] repo                     = CellarCXL-WriteThrough"
    echo "[INFO] ssd_path                 = ${SSD_PATH}"
    echo "[INFO] cxl_dax_device           = ${CXL_DAX_DEVICE}"
    echo "[INFO] worker_threads           = ${WORKER_THREADS}"

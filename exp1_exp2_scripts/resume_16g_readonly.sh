@@ -4,20 +4,20 @@ set -euo pipefail
 trap '' HUP
 
 # =============================================================================
-# Resume 16G experiments — ReadOnly (ReMLCXL-ReadOnly)
+# Resume 16G experiments — ReadOnly (CellarCXL-ReadOnly)
 #
 # Runs the 18 missing 16G experiments that didn't complete in the original run.
 # Results saved to a new timestamped directory (does not touch old results).
 #
 # Usage:
-#   cd /path/to/project/ReMLCXL_experiments
+#   cd /path/to/project/CellarCXL_experiments
 #   nohup bash exp1_exp2_scripts/resume_16g_readonly.sh &
 # =============================================================================
 
 # --- Repo / device config (same as original) ---
 SSD_PATH="/path/to/data/cxl_test_tmp/exp1_exp2_readonly"
 CXL_DAX_DEVICE="/dev/dax0.1"
-REPO_ROOT="/path/to/project/ReMLCXL-ReadOnly"
+REPO_ROOT="/path/to/project/CellarCXL-ReadOnly"
 BUILD_DIR="$REPO_ROOT/build/frontend"
 
 # --- Output ---

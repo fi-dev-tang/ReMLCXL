@@ -4,7 +4,7 @@ set -euo pipefail
 trap '' HUP
 
 # =============================================================================
-# Exp3: WriteThrough Scalability (ReMLCXL-WriteThrough)
+# Exp3: WriteThrough Scalability (CellarCXL-WriteThrough)
 #
 # Workloads: A, F (WriteThrough advantage scenarios)
 # Variants:  two_level, dram_ssd_unconstrained
@@ -24,7 +24,7 @@ CXL_DAX_DEVICE="/dev/dax0.4"
 # Paths
 # -----------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="/path/to/project/ReMLCXL-WriteThrough"
+REPO_ROOT="/path/to/project/CellarCXL-WriteThrough"
 BUILD_DIR="$REPO_ROOT/build/frontend"
 
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -239,7 +239,7 @@ main() {
    log_phase "Exp3 WriteThrough Scalability (theta=$THETA, WS=${WS_GIB} GiB, threads=${THREAD_COUNTS[*]})"
    echo "[INFO] timestamp                = ${TIMESTAMP}"
    echo "[INFO] result_dir               = ${RESULT_DIR}"
-   echo "[INFO] repo                     = ReMLCXL-WriteThrough"
+   echo "[INFO] repo                     = CellarCXL-WriteThrough"
    echo "[INFO] binary_dir               = ${BUILD_DIR}"
    echo "[INFO] ssd_path                 = ${SSD_PATH}"
    echo "[INFO] cxl_dax_device           = ${CXL_DAX_DEVICE}"

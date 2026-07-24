@@ -3,8 +3,8 @@
 # Sourced by run_breakdown.sh (launcher) and _run_breakdown_track.sh (worker).
 
 # Repos
-BUILD_DIR_RO="/path/to/project/ReMLCXL-ReadOnly/build/frontend"
-BUILD_DIR_WT="/path/to/project/ReMLCXL-WriteThrough/build/frontend"
+BUILD_DIR_RO="/path/to/project/CellarCXL-ReadOnly/build/frontend"
+BUILD_DIR_WT="/path/to/project/CellarCXL-WriteThrough/build/frontend"
 
 # Tier / benchmark (exp7 comparison config)
 WS_GIB=23.0

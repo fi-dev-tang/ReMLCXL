@@ -4,7 +4,7 @@ set -euo pipefail
 trap '' HUP
 
 # =============================================================================
-# Exp4: Parameter Sensitivity (ReMLCXL-ReadOnly, ReadOnly)
+# Exp4: Parameter Sensitivity (CellarCXL-ReadOnly, ReadOnly)
 #
 # One-at-a-time sweep of 4 admission control parameters.
 # Only two_level variant, YCSB-B, WS=8 GiB, 8 threads.
@@ -28,7 +28,7 @@ CXL_DAX_DEVICE="/dev/dax0.5"
 # Paths
 # -----------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="/path/to/project/ReMLCXL-ReadOnly"
+REPO_ROOT="/path/to/project/CellarCXL-ReadOnly"
 BUILD_DIR="$REPO_ROOT/build/frontend"
 
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -178,7 +178,7 @@ main() {
    log_phase "Exp4 Parameter Sensitivity (YCSB-${WL}, WS=${WS_GIB}G, theta=$THETA)"
    echo "[INFO] timestamp     = ${TIMESTAMP}"
    echo "[INFO] result_dir    = ${RESULT_DIR}"
-   echo "[INFO] repo          = ReMLCXL-ReadOnly"
+   echo "[INFO] repo          = CellarCXL-ReadOnly"
    echo "[INFO] binary        = ${BUILD_DIR}/experiment_1_ycsb_${WL}"
    echo "[INFO] ssd_path      = ${SSD_PATH}"
    echo "[INFO] cxl_device    = ${CXL_DAX_DEVICE}"

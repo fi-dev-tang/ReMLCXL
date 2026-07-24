@@ -6,11 +6,11 @@ trap '' HUP
 # =============================================================================
 # Exp7: Comparison Experiment
 #
-# Modes:  two_level_readonly  (ReMLCXL-ReadOnly)
-#         two_level_wt        (ReMLCXL-WriteThrough)
-#         bf-tree             (ReMLCXL-WriteThrough)
-#         tiered-indexing-zxj (ReMLCXL-WriteThrough)
-#         hybried-tier-asplos2025 (ReMLCXL-WriteThrough)
+# Modes:  two_level_readonly  (CellarCXL-ReadOnly)
+#         two_level_wt        (CellarCXL-WriteThrough)
+#         bf-tree             (CellarCXL-WriteThrough)
+#         tiered-indexing-zxj (CellarCXL-WriteThrough)
+#         hybried-tier-asplos2025 (CellarCXL-WriteThrough)
 #
 # YCSB:   A/B/C/D/E/F × theta 0.90/0.95/0.99  = 5×6×3 = 90
 # TPC-C:  5 modes × 1 (no theta)                =         5
@@ -22,8 +22,8 @@ trap '' HUP
 # -----------------------------------------------------------------------------
 # Repo paths
 # -----------------------------------------------------------------------------
-BUILD_DIR_WT="/path/to/project/ReMLCXL-WriteThrough/build/frontend"
-BUILD_DIR_RO="/path/to/project/ReMLCXL-ReadOnly/build/frontend"
+BUILD_DIR_WT="/path/to/project/CellarCXL-WriteThrough/build/frontend"
+BUILD_DIR_RO="/path/to/project/CellarCXL-ReadOnly/build/frontend"
 
 SSD_PATH="/path/to/data/cxl_test_tmp/exp7_comparison_ssd"
 CXL_DAX_DEVICE="/dev/dax0.6"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ROOT="/path/to/project/ReMLCXL-ReadOnly"
+REPO_ROOT="/path/to/project/CellarCXL-ReadOnly"
 BUILD_DIR="$REPO_ROOT/build"
 
 export PATH="/path/to/project/local/bin:$PATH"

@@ -19,7 +19,7 @@ trap '' HUP
 # -----------------------------------------------------------------------------
 # Existing run directory (where the 115 successful results already live)
 # -----------------------------------------------------------------------------
-EXISTING_RUN_DIR="/path/to/project/ReMLCXL_experiments/exp5_profile_scrips/run_20260626_204219_exp5_perf"
+EXISTING_RUN_DIR="/path/to/project/CellarCXL_experiments/exp5_profile_scrips/run_20260626_204219_exp5_perf"
 RESULT_DIR="$EXISTING_RUN_DIR"
 MASTER_LOG="$RESULT_DIR/master_resume.log"
 
@@ -34,8 +34,8 @@ mkdir -p "$FLAMEGRAPH_DIR" "$FOLDED_DIR" "$PERF_REPORT_DIR"
 # -----------------------------------------------------------------------------
 # Config (identical to exp5_perf_profiling.sh)
 # -----------------------------------------------------------------------------
-BUILD_DIR_WT="/path/to/project/ReMLCXL-WriteThrough/build/frontend"
-BUILD_DIR_RO="/path/to/project/ReMLCXL-ReadOnly/build/frontend"
+BUILD_DIR_WT="/path/to/project/CellarCXL-WriteThrough/build/frontend"
+BUILD_DIR_RO="/path/to/project/CellarCXL-ReadOnly/build/frontend"
 
 SSD_PATH="/path/to/data/cxl_test_tmp/exp5_perf_profiling"
 CXL_DAX_DEVICE="/dev/dax0.8"

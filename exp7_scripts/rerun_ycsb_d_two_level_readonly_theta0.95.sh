@@ -9,11 +9,11 @@ trap '' HUP
 # Result saved to original exp7 group1 result dir (overwrite old log)
 # =============================================================================
 
-BINARY="/path/to/project/ReMLCXL-ReadOnly/build/frontend/experiment_1_ycsb_d"
+BINARY="/path/to/project/CellarCXL-ReadOnly/build/frontend/experiment_1_ycsb_d"
 SSD_PATH="/path/to/data/cxl_test_tmp/exp7_comparison_ssd"
 CXL_DAX_DEVICE="/dev/dax0.6"
 
-RESULT_DIR="/path/to/project/ReMLCXL_experiments/exp7_scripts/run_ycsb_d_rerun"
+RESULT_DIR="/path/to/project/CellarCXL_experiments/exp7_scripts/run_ycsb_d_rerun"
 mkdir -p "$RESULT_DIR"
 RESULT_FILE="$RESULT_DIR/ycsb_d_two_level_readonly_theta0.95.log"
 

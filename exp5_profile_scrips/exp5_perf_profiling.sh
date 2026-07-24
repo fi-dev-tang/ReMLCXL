@@ -19,8 +19,8 @@ trap '' HUP
 # -----------------------------------------------------------------------------
 # Repo paths (same as exp7)
 # -----------------------------------------------------------------------------
-BUILD_DIR_WT="/path/to/project/ReMLCXL-WriteThrough/build/frontend"
-BUILD_DIR_RO="/path/to/project/ReMLCXL-ReadOnly/build/frontend"
+BUILD_DIR_WT="/path/to/project/CellarCXL-WriteThrough/build/frontend"
+BUILD_DIR_RO="/path/to/project/CellarCXL-ReadOnly/build/frontend"
 
 SSD_PATH="/path/to/data/cxl_test_tmp/exp5_perf_profiling"
 CXL_DAX_DEVICE="/dev/dax0.8"

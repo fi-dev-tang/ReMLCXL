@@ -8,7 +8,7 @@ trap '' HUP
 
 # =============================================================================
 # End-to-End Experiment 1 + Experiment 2 (single-theta, multi-WS sweep)
-#   Repo: ReMLCXL-ReadOnly
+#   Repo: CellarCXL-ReadOnly
 #
 # Purpose
 #   Re-run end-to-end and ablation comparison under the new memory configuration
@@ -49,7 +49,7 @@ trap '' HUP
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# Repo-specific: SSD and DAX device for ReMLCXL-ReadOnly
+# Repo-specific: SSD and DAX device for CellarCXL-ReadOnly
 # -----------------------------------------------------------------------------
 SSD_PATH="/path/to/data/cxl_test_tmp/exp1_exp2_readonly"
 CXL_DAX_DEVICE="/dev/dax0.1"
@@ -58,7 +58,7 @@ CXL_DAX_DEVICE="/dev/dax0.1"
 # Paths
 # -----------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="/path/to/project/ReMLCXL-ReadOnly"
+REPO_ROOT="/path/to/project/CellarCXL-ReadOnly"
 BUILD_DIR="$REPO_ROOT/build/frontend"
 
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -410,7 +410,7 @@ main() {
    log_phase "End-to-End run start (theta=$THETA, WS=${WORKING_SETS[*]} GiB)"
    echo "[INFO] timestamp                = ${TIMESTAMP}"
    echo "[INFO] result_dir               = ${RESULT_DIR}"
-   echo "[INFO] repo                     = ReMLCXL-ReadOnly"
+   echo "[INFO] repo                     = CellarCXL-ReadOnly"
    echo "[INFO] ssd_path                 = ${SSD_PATH}"
    echo "[INFO] cxl_dax_device           = ${CXL_DAX_DEVICE}"
    echo "[INFO] worker_threads           = ${WORKER_THREADS}"
