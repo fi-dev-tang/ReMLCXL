@@ -35,7 +35,7 @@ Background threads handle admission, promotion, and eviction; foreground transac
 </p>
 
 <p align="center">
-  <img src="readme_figures/admission_trace.png" alt="Admission Trace Example" width="600"/>
+  <img src="readme_figures/Two-Level-Admission-Control_0714.png" alt="Two-Level Admission Control (0714)" width="600"/>
 </p>
 
 Admission is cascaded in two levels:
